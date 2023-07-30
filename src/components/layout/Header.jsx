@@ -6,10 +6,40 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { selectUser, reset } from "../../reducers/current-user-slice";
+import { useSelector, useDispatch } from "react-redux";
+import { AppLocalStore } from "../../utils/app-local-store";
 
 export const Header = () => {
   const navigate = useNavigate();
+  const userState = useSelector(selectUser);
+  const dispatch = useDispatch();
+
+  const logOut = () => {
+    AppLocalStore.setToken("");
+    dispatch(reset());
+  };
+
+  const navBar = (
+    <nav>
+      <Link component={RouterLink} variant="button" color="inherit" to="/cases">
+        Сообщения о кражах
+      </Link>
+    </nav>
+  );
+
+  const logInButton = (
+    <Button color="inherit" onClick={() => navigate("/login")}>
+      Login
+    </Button>
+  );
+
+  const logOutButton = (
+    <Button color="inherit" onClick={logOut}>
+      LogOut
+    </Button>
+  );
 
   return (
     <AppBar position="relative">
@@ -21,20 +51,8 @@ export const Header = () => {
               Сервис проката велосипедов
             </Typography>
           </Box>
-          <nav>
-            <Link variant="button" color="inherit" href="#" sx={{ mx: 1.5 }}>
-              Features
-            </Link>
-            <Link variant="button" color="inherit" href="#" sx={{ mx: 1.5 }}>
-              Enterprise
-            </Link>
-            <Link variant="button" color="inherit" href="#" sx={{ mx: 1.5 }}>
-              Support
-            </Link>
-          </nav>
-          <Button color="inherit" onClick={() => navigate("/login")}>
-            Login
-          </Button>
+          {userState.isLoggedIn && navBar}
+          {userState.isLoggedIn ? logOutButton : logInButton}
         </Toolbar>
       </Container>
     </AppBar>

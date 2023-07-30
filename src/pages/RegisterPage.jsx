@@ -5,15 +5,43 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { useState } from "react";
+import { Auth } from "../services/http";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 
 export const RegisterPage = () => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+  const [isLoading, setLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formValues, setFormValues] = useState(formValue);
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({
+      ...formValues,
+      [name]: value,
     });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    setIsSubmitted(true);
+    const isValid = ["email", "password", "clientId"].every(
+      (field) => !!formValues[field]
+    );
+
+    if (isValid) {
+      setLoading(true);
+
+      Auth.signUp(formValues)
+        .then(() => {
+          setLoading(false);
+          navigate("/login");
+        })
+        .catch(() => setLoading(false));
+    }
   };
 
   return (
@@ -31,27 +59,6 @@ export const RegisterPage = () => {
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="given-name"
-                name="firstName"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="family-name"
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 required
@@ -59,7 +66,11 @@ export const RegisterPage = () => {
                 id="email"
                 label="Email Address"
                 name="email"
+                onChange={handleChange}
+                value={formValues.email}
+                error={isSubmitted && !formValues.email}
                 autoComplete="email"
+                disabled={isLoading}
               />
             </Grid>
             <Grid item xs={12}>
@@ -70,7 +81,49 @@ export const RegisterPage = () => {
                 label="Password"
                 type="password"
                 id="password"
+                onChange={handleChange}
+                value={formValues.password}
+                error={isSubmitted && !formValues.password}
                 autoComplete="new-password"
+                disabled={isLoading}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                name="clientId"
+                label="Client Id"
+                type="text"
+                id="clientId"
+                onChange={handleChange}
+                value={formValues.clientId}
+                error={isSubmitted && !formValues.clientId}
+                disabled={isLoading}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoComplete="given-name"
+                name="firstName"
+                fullWidth
+                id="firstName"
+                label="First Name"
+                onChange={handleChange}
+                value={formValues.firstName}
+                disabled={isLoading}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="lastName"
+                label="Last Name"
+                name="lastName"
+                onChange={handleChange}
+                value={formValues.lastName}
+                autoComplete="family-name"
+                disabled={isLoading}
               />
             </Grid>
           </Grid>
@@ -78,13 +131,14 @@ export const RegisterPage = () => {
             type="submit"
             fullWidth
             variant="contained"
+            disabled={isLoading}
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign Up
+            {isLoading ? "Loading..." : "Sign Up"}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link component={RouterLink} to="/login">
                 Already have an account? Sign in
               </Link>
             </Grid>
@@ -93,4 +147,12 @@ export const RegisterPage = () => {
       </Box>
     </Container>
   );
+};
+
+const formValue = {
+  email: "",
+  password: "",
+  clientId: "",
+  firstName: "",
+  lastName: "",
 };
