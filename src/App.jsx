@@ -7,7 +7,8 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AxiosInterceptor } from "./services/http";
 import { Protected } from "./components/utils/ProtectedRoute";
-import CasesPage from "./pages/CasesPage";
+import CaseListPage from "./pages/CaseListPage/CaseListPage";
+import OfficerListPage from "./pages/OfficerListPage/OfficerListPage";
 
 export const App = () => {
   return (
@@ -20,7 +21,11 @@ export const App = () => {
             <Route path="/" element={<Navigate to="/welcome" replace />} />
             <Route
               path="cases"
-              element={<Protected element={<CasesPage />} />}
+              element={<Protected element={<CaseListPage />} />}
+            />
+            <Route
+              path="officers"
+              element={<Protected element={<OfficerListPage />} />}
             />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />

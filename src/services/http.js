@@ -1,7 +1,9 @@
 import axios from "axios";
 import { AppLocalStore } from "../utils/app-local-store";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { selectUser, fetchCurrentUser } from "../reducers/current-user-slice";
 
 const authorizedClient = axios.create();
 
@@ -17,9 +19,13 @@ authorizedClient.interceptors.request.use(
 );
 
 export const AxiosInterceptor = ({ children }) => {
+  const [isChecking, setIsChecking] = useState(true);
   const navigate = useNavigate();
+  const userState = useSelector(selectUser);
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    const token = AppLocalStore.getToken();
     const resInterceptor = (response) => response;
     const errInterceptor = (error) => {
       if (error.response?.status === 401) {
@@ -32,10 +38,18 @@ export const AxiosInterceptor = ({ children }) => {
       errInterceptor
     );
 
-    return () => authorizedClient.interceptors.response.eject(interceptor);
-  }, [navigate]);
+    if (!userState.isLoggedIn && token) {
+      dispatch(fetchCurrentUser()).then(() => {
+        setIsChecking(false);
+      });
+    } else {
+      setIsChecking(false);
+    }
 
-  return children;
+    return () => authorizedClient.interceptors.response.eject(interceptor);
+  }, [navigate, dispatch, userState.isLoggedIn]);
+
+  return isChecking ? <div>Загрузка...</div> : children;
 };
 
 export const Auth = {
@@ -47,5 +61,23 @@ export const Auth = {
   },
   auth: () => {
     return authorizedClient.get("/api/auth/");
+  },
+};
+
+export const Cases = {
+  fetch: () => {
+    return authorizedClient.get("/api/cases");
+  },
+  create: (data) => {
+    return authorizedClient.post("/api/cases", data);
+  },
+  publicReport: (data) => {
+    return authorizedClient.post("/api/public/report", data);
+  },
+};
+
+export const Officers = {
+  fetch: () => {
+    return authorizedClient.get("/api/officers");
   },
 };

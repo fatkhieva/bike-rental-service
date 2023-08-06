@@ -18,7 +18,7 @@ import { useSelector, useDispatch } from "react-redux";
 export const LoginPage = () => {
   const [isLoading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [formValues, setFormValues] = useState(formValue);
+  const [formValues, setFormValues] = useState(defaultFormValues);
 
   const location = useLocation();
   const userState = useSelector(selectUser);
@@ -55,10 +55,6 @@ export const LoginPage = () => {
     }
   };
 
-  const loading = () => {
-    return userState.isLoading || isLoading;
-  };
-
   return userState.isLoggedIn ? (
     <Navigate to={from} />
   ) : (
@@ -71,7 +67,7 @@ export const LoginPage = () => {
           alignItems: "center",
         }}
       >
-        <Typography component="h1" variant="h5">
+        <Typography component="h2" variant="h5">
           Sign in
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -87,7 +83,7 @@ export const LoginPage = () => {
                 value={formValues.email}
                 error={isSubmitted && !formValues.email}
                 autoComplete="email"
-                disabled={loading()}
+                disabled={isLoading}
               />
             </Grid>
             <Grid item xs={12}>
@@ -102,7 +98,7 @@ export const LoginPage = () => {
                 value={formValues.password}
                 error={isSubmitted && !formValues.password}
                 autoComplete="new-password"
-                disabled={loading()}
+                disabled={isLoading}
               />
             </Grid>
           </Grid>
@@ -110,10 +106,10 @@ export const LoginPage = () => {
             type="submit"
             fullWidth
             variant="contained"
-            disabled={loading()}
+            disabled={isLoading}
             sx={{ mt: 3, mb: 2 }}
           >
-            {loading() ? "Loading..." : "Sign In"}
+            {isLoading ? "Loading..." : "Sign In"}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
@@ -128,7 +124,7 @@ export const LoginPage = () => {
   );
 };
 
-const formValue = {
+const defaultFormValues = {
   email: "",
   password: "",
 };

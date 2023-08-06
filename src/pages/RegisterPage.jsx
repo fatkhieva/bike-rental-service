@@ -12,7 +12,7 @@ import { useNavigate, Link as RouterLink } from "react-router-dom";
 export const RegisterPage = () => {
   const [isLoading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [formValues, setFormValues] = useState(formValue);
+  const [formValues, setFormValues] = useState(defaultFormValues);
 
   const navigate = useNavigate();
 
@@ -45,7 +45,7 @@ export const RegisterPage = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container maxWidth="xs">
       <Box
         sx={{
           marginTop: 12,
@@ -54,7 +54,7 @@ export const RegisterPage = () => {
           alignItems: "center",
         }}
       >
-        <Typography component="h1" variant="h5">
+        <Typography component="h2" variant="h5">
           Sign up
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -149,7 +149,7 @@ export const RegisterPage = () => {
   );
 };
 
-const formValue = {
+const defaultFormValues = {
   email: "",
   password: "",
   clientId: "",

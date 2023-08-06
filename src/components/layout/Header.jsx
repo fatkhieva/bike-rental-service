@@ -23,9 +23,24 @@ export const Header = () => {
 
   const navBar = (
     <nav>
-      <Link component={RouterLink} variant="button" color="inherit" to="/cases">
-        Сообщения о кражах
-      </Link>
+      <Box sx={{ display: "flex", gap: '16px' }}>
+        <Link
+          component={RouterLink}
+          variant="button"
+          color="inherit"
+          to="/cases"
+        >
+          Сообщения о кражах
+        </Link>
+        <Link
+          component={RouterLink}
+          variant="button"
+          color="inherit"
+          to="/officers"
+        >
+          Ответственные сотрудники
+        </Link>
+      </Box>
     </nav>
   );
 
