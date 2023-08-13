@@ -74,6 +74,9 @@ export const Cases = {
   publicReport: (data) => {
     return authorizedClient.post("/api/public/report", data);
   },
+  getCase: (id) => {
+    return authorizedClient.get(`/api/cases/${id}`);
+  },
 };
 
 export const Officers = {

@@ -14,6 +14,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import { NewOfficer } from "./NewOfficer";
 
 class OfficerListPage extends React.Component {
   componentDidMount() {
@@ -25,9 +26,19 @@ class OfficerListPage extends React.Component {
   render() {
     return (
       <Container>
-        <Typography component="h2" variant="h5">
-          Ответственные сотрудники
-        </Typography>
+        <Box
+          sx={{
+            marginTop: 2,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography component="h2" variant="h5">
+            Ответственные сотрудники
+          </Typography>
+          <NewOfficer />
+        </Box>
         <Box sx={{ marginTop: 2 }}>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">

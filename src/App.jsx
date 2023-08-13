@@ -9,6 +9,7 @@ import { AxiosInterceptor } from "./services/http";
 import { Protected } from "./components/utils/ProtectedRoute";
 import CaseListPage from "./pages/CaseListPage/CaseListPage";
 import OfficerListPage from "./pages/OfficerListPage/OfficerListPage";
+import { CasePage } from "./pages/CasePage";
 
 export const App = () => {
   return (
@@ -20,16 +21,20 @@ export const App = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/welcome" replace />} />
             <Route
-              path="cases"
+              path="/cases"
               element={<Protected element={<CaseListPage />} />}
             />
             <Route
-              path="officers"
+              path="/cases/:caseId"
+              element={<Protected element={<CasePage />} />}
+            />
+            <Route
+              path="/officers"
               element={<Protected element={<OfficerListPage />} />}
             />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage />} />
-            <Route path="welcome" element={<WelcomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/welcome" element={<WelcomePage />} />
           </Routes>
         </Container>
       </AxiosInterceptor>

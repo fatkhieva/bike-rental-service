@@ -15,6 +15,8 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { NewCase } from "./NewCase";
+import dayjs from "dayjs";
+import { Link as RouterLink } from "react-router-dom";
 
 class CaseListPage extends React.Component {
   componentDidMount() {
@@ -22,6 +24,26 @@ class CaseListPage extends React.Component {
   }
 
   componentWillUnmount() {}
+
+  getStatus(status) {
+    switch (status) {
+      case "new":
+        return "Новый";
+      case "in_progress":
+        return "В процессе";
+      case "done":
+        return "Завершен";
+    }
+  }
+
+  getType(type) {
+    switch (type) {
+      case "sport":
+        return "Спортивный";
+      case "general":
+        return "Обычный";
+    }
+  }
 
   render() {
     return (
@@ -32,6 +54,7 @@ class CaseListPage extends React.Component {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            height: "40px",
           }}
         >
           <Typography component="h2" variant="h5">
@@ -45,10 +68,12 @@ class CaseListPage extends React.Component {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
+                  <TableCell>Статус</TableCell>
+                  <TableCell>Дата кражи</TableCell>
                   <TableCell>Номер лицензии</TableCell>
-                  <TableCell align="right">Тип</TableCell>
-                  <TableCell align="right">ФИО владельца</TableCell>
-                  <TableCell align="right">Цвет</TableCell>
+                  <TableCell>Тип</TableCell>
+                  <TableCell>ФИО владельца</TableCell>
+                  <TableCell>Цвет</TableCell>
                   <TableCell align="right">Действия</TableCell>
                 </TableRow>
               </TableHead>
@@ -58,14 +83,21 @@ class CaseListPage extends React.Component {
                     key={row._id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row">
-                      {row.licenseNumber}
+                    <TableCell>{this.getStatus(row.status)}</TableCell>
+                    <TableCell>
+                      {row.date ? dayjs(row.date).format("DD.MM.YYYY") : ""}
                     </TableCell>
-                    <TableCell align="right">{row.type}</TableCell>
-                    <TableCell align="right">{row.ownerFullName}</TableCell>
-                    <TableCell align="right">{row.color}</TableCell>
+                    <TableCell>{row.licenseNumber}</TableCell>
+                    <TableCell>{this.getType(row.type)}</TableCell>
+                    <TableCell>{row.ownerFullName}</TableCell>
+                    <TableCell>{row.color}</TableCell>
                     <TableCell align="right">
-                      <Button variant="outlined" size="small">
+                      <Button
+                        component={RouterLink}
+                        to={"/cases/" + row._id}
+                        variant="outlined"
+                        size="small"
+                      >
                         Редактировать
                       </Button>
                       <IconButton aria-label="delete" color="error">

@@ -3,12 +3,12 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
-import { CaseForm } from "../../components/CaseForm";
+import { OfficerForm } from "../../components/OfficerForm";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCases, createCase } from "../../reducers/cases-slice";
 
-export const NewCase = () => {
+export const NewOfficer = () => {
   const [open, setOpen] = useState(false);
   const [formValues, setFormValues] = useState(defaultFormValues);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -29,24 +29,20 @@ export const NewCase = () => {
     e.preventDefault();
     setIsSubmitted(true);
 
-    const isValid = [
-      "licenseNumber",
-      "ownerFullName",
-      "type",
-    ].every((field) => !!formValues[field]);
+    const isValid = ["licenseNumber", "ownerFullName", "type"].every(
+      (field) => !!formValues[field]
+    );
 
     if (isValid) {
       console.log(formValues);
-      dispatch(createCase(formValues)).then(() => {
-        setOpen(false);
-      });
+      dispatch(createCase(formValues));
     }
   };
 
   return (
     <>
       <Button variant="contained" onClick={handleOpen}>
-        Сообщить о краже
+        Добавить сотрудника
       </Button>
       <Dialog
         open={open}
@@ -54,20 +50,20 @@ export const NewCase = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle>Сообщение о краже</DialogTitle>
+        <DialogTitle>Добавление сотрудника</DialogTitle>
         <DialogContent>
-          <CaseForm
+          <OfficerForm
             {...{
               formValues,
               setFormValues,
               isSubmitted,
-              isFormBlocked: casesState.isSending,
+              isLoading: casesState.isSending,
             }}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit} autoFocus>
-            Сохранить
+            Добавить
           </Button>
         </DialogActions>
       </Dialog>
@@ -76,12 +72,9 @@ export const NewCase = () => {
 };
 
 const defaultFormValues = {
-  licenseNumber: "",
-  ownerFullName: "",
-  type: "",
-  officer: "",
-  clientId: "",
-  color: "",
-  date: "",
-  description: "",
+  email: "",
+  password: "",
+  firstName: "",
+  lastName: "",
+  approved: false,
 };
