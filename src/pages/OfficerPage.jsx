@@ -1,40 +1,41 @@
-import { CaseForm } from "../components/CaseForm";
+import { OfficerForm } from "../components/OfficerForm";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectCases, updateCase } from "../reducers/cases-slice";
+import { selectOfficers, updateOfficer } from "../reducers/officers-slice";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { Cases } from "../services/http";
 import { useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
+import { Officers } from "../services/http";
 
-export const CasePage = () => {
+export const OfficerPage = () => {
   const [formValues, setFormValues] = useState(defaultFormValues);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isBlocked, setIsBlocked] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
-  const casesState = useSelector(selectCases);
+  const officersState = useSelector(selectOfficers);
   const dispatch = useDispatch();
-  const { caseId } = useParams();
+  const { officerId } = useParams();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const { password, ...others } = formValues;
     setIsSubmitted(true);
-    dispatch(updateCase(formValues)).then(() => {
+    dispatch(updateOfficer(others)).then(() => {
       setIsBlocked(true);
     });
   };
 
   useEffect(() => {
     setIsLoading(true);
-    Cases.getCase(caseId).then((res) => {
-      const { createdAt, updatedAt, __v, ...others } = res.data.data;
+    Officers.getOfficer(officerId).then((res) => {
+      const { clientId, __v, ...others } = res.data.data;
       setFormValues(others);
       setIsLoading(false);
     });
-  }, [caseId]);
+  }, [officerId]);
 
   return (
     <Container>
@@ -48,15 +49,15 @@ export const CasePage = () => {
         }}
       >
         <Typography component="h2" variant="h5">
-          Сообщение о кражах
+          Ответственный сотрудник
         </Typography>
       </Box>
-      <CaseForm
+      <OfficerForm
         {...{
           formValues,
           setFormValues,
           isSubmitted,
-          isFormBlocked: casesState.isProcessing || isBlocked,
+          isFormBlocked: officersState.isProcessing || isBlocked,
           isLoading,
         }}
       />
@@ -76,9 +77,9 @@ export const CasePage = () => {
               onClick={handleSubmit}
               autoFocus
               variant="contained"
-              disabled={casesState.isProcessing}
+              disabled={officersState.isProcessing}
             >
-              {casesState.isProcessing ? "Сохранение..." : "Сохранить"}
+              {officersState.isProcessing ? "Сохранение..." : "Сохранить"}
             </Button>
           )}
           <Button
@@ -94,15 +95,9 @@ export const CasePage = () => {
 };
 
 const defaultFormValues = {
-  _id: "",
-  licenseNumber: "",
-  ownerFullName: "",
-  type: "",
-  officer: "",
-  clientId: "",
-  color: "",
-  date: "",
-  description: "",
-  resolution: "",
-  status: "",
+  email: "",
+  password: "",
+  firstName: "",
+  lastName: "",
+  approved: false,
 };

@@ -6,14 +6,14 @@ import Button from "@mui/material/Button";
 import { OfficerForm } from "../../components/OfficerForm";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectCases, createCase } from "../../reducers/cases-slice";
+import { selectOfficers, createOfficer } from "../../reducers/officers-slice";
 
 export const NewOfficer = () => {
   const [open, setOpen] = useState(false);
   const [formValues, setFormValues] = useState(defaultFormValues);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const casesState = useSelector(selectCases);
+  const officersState = useSelector(selectOfficers);
   const dispatch = useDispatch();
 
   const handleOpen = () => {
@@ -23,19 +23,19 @@ export const NewOfficer = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setIsSubmitted(false);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitted(true);
 
-    const isValid = ["licenseNumber", "ownerFullName", "type"].every(
-      (field) => !!formValues[field]
-    );
+    const isValid = ["email", "password"].every((field) => !!formValues[field]);
 
     if (isValid) {
-      console.log(formValues);
-      dispatch(createCase(formValues));
+      dispatch(createOfficer(formValues)).then(() => {
+        handleClose();
+      });
     }
   };
 
@@ -57,13 +57,19 @@ export const NewOfficer = () => {
               formValues,
               setFormValues,
               isSubmitted,
-              isLoading: casesState.isSending,
+              isFormBlocked: officersState.isProcessing,
             }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit} autoFocus>
-            Добавить
+          <Button
+            onClick={handleSubmit}
+            autoFocus
+            disabled={officersState.isProcessing}
+          >
+            {officersState.isProcessing
+              ? "Сохранение..."
+              : "Сохранить"}
           </Button>
         </DialogActions>
       </Dialog>

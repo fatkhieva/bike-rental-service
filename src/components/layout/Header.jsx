@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { useNavigate, NavLink as RouterLink } from "react-router-dom";
 import { selectUser, reset } from "../../reducers/current-user-slice";
 import { useSelector, useDispatch } from "react-redux";
 import { AppLocalStore } from "../../utils/app-local-store";
@@ -23,7 +23,7 @@ export const Header = () => {
 
   const navBar = (
     <nav>
-      <Box sx={{ display: "flex", gap: '16px' }}>
+      <Box sx={{ display: "flex", gap: "16px" }}>
         <Link
           component={RouterLink}
           variant="button"
@@ -38,21 +38,26 @@ export const Header = () => {
           color="inherit"
           to="/officers"
         >
-          Ответственные сотрудники
+          Сотрудники
         </Link>
       </Box>
     </nav>
   );
 
   const logInButton = (
-    <Button color="inherit" onClick={() => navigate("/login")}>
-      Login
-    </Button>
+    <Box>
+      <Button color="inherit" onClick={() => navigate("/login")}>
+        Войти
+      </Button>
+      <Button color="inherit" onClick={() => navigate("/register")}>
+        Регистрация
+      </Button>
+    </Box>
   );
 
   const logOutButton = (
     <Button color="inherit" onClick={logOut}>
-      LogOut
+      Выйти
     </Button>
   );
 
@@ -62,7 +67,14 @@ export const Header = () => {
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <BikeScooter sx={{ mr: 2 }} />
-            <Typography component="h1" variant="h6" color="inherit" noWrap>
+            <Typography
+              sx={{ cursor: "pointer" }}
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              onClick={() => navigate("/")}
+            >
               Сервис проката велосипедов
             </Typography>
           </Box>

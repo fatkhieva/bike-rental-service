@@ -10,6 +10,7 @@ import { Protected } from "./components/utils/ProtectedRoute";
 import CaseListPage from "./pages/CaseListPage/CaseListPage";
 import OfficerListPage from "./pages/OfficerListPage/OfficerListPage";
 import { CasePage } from "./pages/CasePage";
+import { OfficerPage } from "./pages/OfficerPage";
 
 export const App = () => {
   return (
@@ -31,6 +32,10 @@ export const App = () => {
             <Route
               path="/officers"
               element={<Protected element={<OfficerListPage />} />}
+            />
+            <Route
+              path="/officers/:officerId"
+              element={<Protected element={<OfficerPage />} />}
             />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />

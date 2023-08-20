@@ -23,22 +23,20 @@ export const NewCase = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setIsSubmitted(false);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitted(true);
 
-    const isValid = [
-      "licenseNumber",
-      "ownerFullName",
-      "type",
-    ].every((field) => !!formValues[field]);
+    const isValid = ["licenseNumber", "ownerFullName", "type"].every(
+      (field) => !!formValues[field]
+    );
 
     if (isValid) {
-      console.log(formValues);
       dispatch(createCase(formValues)).then(() => {
-        setOpen(false);
+        handleClose();
       });
     }
   };
@@ -61,13 +59,17 @@ export const NewCase = () => {
               formValues,
               setFormValues,
               isSubmitted,
-              isFormBlocked: casesState.isSending,
+              isFormBlocked: casesState.isProcessing,
             }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit} autoFocus>
-            Сохранить
+          <Button
+            onClick={handleSubmit}
+            autoFocus
+            disabled={casesState.isProcessing}
+          >
+            {casesState.isProcessing ? "Сохранение..." : "Сохранить"}
           </Button>
         </DialogActions>
       </Dialog>

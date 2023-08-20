@@ -68,7 +68,7 @@ export const LoginPage = () => {
         }}
       >
         <Typography component="h2" variant="h5">
-          Sign in
+          Авторизация
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
@@ -76,7 +76,7 @@ export const LoginPage = () => {
               <TextField
                 required
                 fullWidth
-                label="Email Address"
+                label="Email"
                 name="email"
                 id="email"
                 onChange={handleChange}
@@ -92,7 +92,7 @@ export const LoginPage = () => {
                 fullWidth
                 name="password"
                 id="password"
-                label="Password"
+                label="Пароль"
                 type="password"
                 onChange={handleChange}
                 value={formValues.password}
@@ -109,12 +109,12 @@ export const LoginPage = () => {
             disabled={isLoading}
             sx={{ mt: 3, mb: 2 }}
           >
-            {isLoading ? "Loading..." : "Sign In"}
+            {isLoading ? "Авторизация..." : "Войти"}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link component={RouterLink} to="/register">
-                Don't have an account? Sign Up
+                У вас еще нет аккаунта? Регистрация
               </Link>
             </Grid>
           </Grid>

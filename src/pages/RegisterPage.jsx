@@ -55,7 +55,7 @@ export const RegisterPage = () => {
         }}
       >
         <Typography component="h2" variant="h5">
-          Sign up
+          Регистрация
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
@@ -64,7 +64,7 @@ export const RegisterPage = () => {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Email"
                 name="email"
                 onChange={handleChange}
                 value={formValues.email}
@@ -78,7 +78,7 @@ export const RegisterPage = () => {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Пароль"
                 type="password"
                 id="password"
                 onChange={handleChange}
@@ -108,7 +108,7 @@ export const RegisterPage = () => {
                 name="firstName"
                 fullWidth
                 id="firstName"
-                label="First Name"
+                label="Имя"
                 onChange={handleChange}
                 value={formValues.firstName}
                 disabled={isLoading}
@@ -118,7 +118,7 @@ export const RegisterPage = () => {
               <TextField
                 fullWidth
                 id="lastName"
-                label="Last Name"
+                label="Фамилия"
                 name="lastName"
                 onChange={handleChange}
                 value={formValues.lastName}
@@ -134,12 +134,12 @@ export const RegisterPage = () => {
             disabled={isLoading}
             sx={{ mt: 3, mb: 2 }}
           >
-            {isLoading ? "Loading..." : "Sign Up"}
+            {isLoading ? "Регистрация..." : "Зарегистрироваться"}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link component={RouterLink} to="/login">
-                Already have an account? Sign in
+                Уже есть зарегистрированы? Войти
               </Link>
             </Grid>
           </Grid>

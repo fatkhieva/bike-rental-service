@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { fetchAllOfficers } from "../../reducers/officers-slice";
-import DeleteIcon from '@mui/icons-material/Delete';
+import { fetchAllOfficers, deleteOfficer } from "../../reducers/officers-slice";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,13 +15,34 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import { NewOfficer } from "./NewOfficer";
+import { Link as RouterLink } from "react-router-dom";
+import { ConfirmRemove } from "../../components/ConfirmRemove";
 
 class OfficerListPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { toRemove: null };
+  }
+
   componentDidMount() {
     this.props.fetchOfficers();
   }
 
   componentWillUnmount() {}
+
+  confirmRemove = (id) => {
+    this.setState({ toRemove: id });
+  };
+
+  handleClose = () => {
+    this.setState({ toRemove: null });
+  };
+
+  handleRemove = (id) => {
+    this.props.removeOfficer(id).then(() => {
+      this.setState({ toRemove: null });
+    });
+  };
 
   render() {
     return (
@@ -66,8 +87,19 @@ class OfficerListPage extends React.Component {
                       {row.approved ? "Одобренный" : "Неодобренный"}
                     </TableCell>
                     <TableCell align="right">
-                      <Button variant="outlined" size="small">Редактировать</Button>
-                      <IconButton aria-label="delete" color="error">
+                      <Button
+                        component={RouterLink}
+                        to={"/officers/" + row._id}
+                        variant="outlined"
+                        size="small"
+                      >
+                        Редактировать
+                      </Button>
+                      <IconButton
+                        aria-label="delete"
+                        color="error"
+                        onClick={() => this.confirmRemove(row._id)}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -77,6 +109,14 @@ class OfficerListPage extends React.Component {
             </Table>
           </TableContainer>
         </Box>
+        <ConfirmRemove
+          {...{
+            handleClose: this.handleClose,
+            handleRemove: this.handleRemove,
+            id: this.state.toRemove,
+            isLoading: this.props.isProcessing,
+          }}
+        />
       </Container>
     );
   }
@@ -86,12 +126,14 @@ const mapStateToProps = (state) => {
   return {
     officers: state.officers.data,
     isLoading: state.officers.isLoading,
+    isProcessing: state.officers.isProcessing,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchOfficers: () => dispatch(fetchAllOfficers()),
+    removeOfficer: (id) => dispatch(deleteOfficer(id)),
   };
 };
 

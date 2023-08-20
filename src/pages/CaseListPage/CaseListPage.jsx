@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { fetchAllCases } from "../../reducers/cases-slice";
+import { fetchAllCases, deleteCase } from "../../reducers/cases-slice";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -17,13 +17,33 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { NewCase } from "./NewCase";
 import dayjs from "dayjs";
 import { Link as RouterLink } from "react-router-dom";
+import { ConfirmRemove } from "../../components/ConfirmRemove";
 
 class CaseListPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { toRemove: null };
+  }
+
   componentDidMount() {
     this.props.fetchCases();
   }
 
   componentWillUnmount() {}
+
+  confirmRemove = (id) => {
+    this.setState({ toRemove: id });
+  };
+
+  handleClose = () => {
+    this.setState({ toRemove: null });
+  };
+
+  handleRemove = (id) => {
+    this.props.removeCase(id).then(() => {
+      this.setState({ toRemove: null });
+    });
+  };
 
   getStatus(status) {
     switch (status) {
@@ -33,6 +53,8 @@ class CaseListPage extends React.Component {
         return "В процессе";
       case "done":
         return "Завершен";
+      default:
+        return "";
     }
   }
 
@@ -42,6 +64,8 @@ class CaseListPage extends React.Component {
         return "Спортивный";
       case "general":
         return "Обычный";
+      default:
+        return "";
     }
   }
 
@@ -100,7 +124,11 @@ class CaseListPage extends React.Component {
                       >
                         Редактировать
                       </Button>
-                      <IconButton aria-label="delete" color="error">
+                      <IconButton
+                        aria-label="delete"
+                        color="error"
+                        onClick={() => this.confirmRemove(row._id)}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -110,6 +138,14 @@ class CaseListPage extends React.Component {
             </Table>
           </TableContainer>
         </Box>
+        <ConfirmRemove
+          {...{
+            handleClose: this.handleClose,
+            handleRemove: this.handleRemove,
+            id: this.state.toRemove,
+            isLoading: this.props.isProcessing,
+          }}
+        />
       </Container>
     );
   }
@@ -119,12 +155,14 @@ const mapStateToProps = (state) => {
   return {
     cases: state.cases.data,
     isLoading: state.cases.isLoading,
+    isProcessing: state.cases.isProcessing,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCases: () => dispatch(fetchAllCases()),
+    removeCase: (id) => dispatch(deleteCase(id)),
   };
 };
 

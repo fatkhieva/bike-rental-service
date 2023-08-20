@@ -3,12 +3,14 @@ import { Cases } from "../services/http";
 
 export const CASES_FETCH = "CASES_FETCH";
 export const CREATE_CASE = "CREATE_CASE";
+export const UPDATE_CASE = "UPDATE_CASE";
+export const DELETE_CASE = "DELETE_CASE";
 
 const initialState = {
-  isSending: false,
-  isCreating: false,
+  isLoading: false,
+  isProcessing: false,
   isError: false,
-  isSendError: false,
+  isProcessingError: false,
   data: [],
 };
 
@@ -20,6 +22,16 @@ export const fetchAllCases = createAsyncThunk(
 export const createCase = createAsyncThunk(
   CREATE_CASE,
   async (data) => await Cases.create(data)
+);
+
+export const updateCase = createAsyncThunk(
+  UPDATE_CASE,
+  async (data) => await Cases.updateCase(data._id, data)
+);
+
+export const deleteCase = createAsyncThunk(
+  DELETE_CASE,
+  async (id) => await Cases.deleteCase(id)
 );
 
 export const casesSlice = createSlice({
@@ -47,17 +59,44 @@ export const casesSlice = createSlice({
       })
 
       .addCase(createCase.pending, (state) => {
-        state.isSendError = false;
-        state.isSending = true;
+        state.isProcessingError = false;
+        state.isProcessing = true;
       })
       .addCase(createCase.fulfilled, (state, action) => {
-        console.log(action.payload.data);
-        state.isSending = false;
+        state.isProcessing = false;
         state.data = [...state.data, action.payload.data?.data];
       })
       .addCase(createCase.rejected, (state) => {
-        state.isSendError = true;
-        state.isSending = false;
+        state.isProcessingError = true;
+        state.isProcessing = false;
+      })
+
+      .addCase(updateCase.pending, (state) => {
+        state.isProcessingError = false;
+        state.isProcessing = true;
+      })
+      .addCase(updateCase.fulfilled, (state, action) => {
+        state.isProcessing = false;
+        const { data } = action.payload.data;
+        state.data = state.data.map(c => c._id === data._id ? data : c);
+      })
+      .addCase(updateCase.rejected, (state) => {
+        state.isProcessingError = true;
+        state.isProcessing = false;
+      })
+
+      .addCase(deleteCase.pending, (state) => {
+        state.isProcessingError = false;
+        state.isProcessing = true;
+      })
+      .addCase(deleteCase.fulfilled, (state, action) => {
+        state.isProcessing = false;
+        const { arg } = action.meta;
+        state.data = state.data.filter(c => c._id !== arg);
+      })
+      .addCase(deleteCase.rejected, (state) => {
+        state.isProcessingError = true;
+        state.isProcessing = false;
       });
   },
 });

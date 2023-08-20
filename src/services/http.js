@@ -77,10 +77,28 @@ export const Cases = {
   getCase: (id) => {
     return authorizedClient.get(`/api/cases/${id}`);
   },
+  updateCase: (id, data) => {
+    return authorizedClient.put(`/api/cases/${id}`, data);
+  },
+  deleteCase: (id) => {
+    return authorizedClient.delete(`/api/cases/${id}`);
+  },
 };
 
 export const Officers = {
   fetch: () => {
     return authorizedClient.get("/api/officers");
+  },
+  create: (data) => {
+    return authorizedClient.post("/api/officers", data);
+  },
+  getOfficer: (id) => {
+    return authorizedClient.get(`/api/officers/${id}`);
+  },
+  updateOfficer: (id, data) => {
+    return authorizedClient.put(`/api/officers/${id}`, data);
+  },
+  deleteOfficer: (id) => {
+    return authorizedClient.delete(`/api/officers/${id}`);
   },
 };
